@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +19,21 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    // MARK: - IBOutlet properties
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+    
+    // MARK: - Required UICollectionViewDataSource Methods
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let eachCell = collectionView.dequeueReusableCellWithReuseIdentifier("PersonCellIdentifier", forIndexPath: indexPath) as! PersonCollectionViewCell
+        return eachCell
+    }
 
 }
 
