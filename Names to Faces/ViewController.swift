@@ -13,13 +13,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addNewPerson")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addNewPerson")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - Stored Properties
+    
+    var people = Array<Person>()
     
     // MARK: - IBOutlet properties
     
@@ -54,6 +58,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         print(imagePath)
         let jpegData = UIImageJPEGRepresentation(newImage, 80.0)
         jpegData?.writeToFile(imagePath, atomically: true)
+        
+        let newPerson = Person(name: "Unregistered", imageName: imageName)
+        self.people.append(newPerson)
+        self.collectionView.reloadData()
         
         self.dismissViewControllerAnimated(true, completion: nil)
     }
