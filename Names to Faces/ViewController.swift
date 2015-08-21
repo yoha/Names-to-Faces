@@ -8,11 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addNewPerson")
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,6 +34,44 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let eachCell = collectionView.dequeueReusableCellWithReuseIdentifier("PersonCellIdentifier", forIndexPath: indexPath) as! PersonCollectionViewCell
         return eachCell
+    }
+    
+    // MARK: - Optional UIImagePickerController Delegate Methods
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        var newImage: UIImage!
+        
+        if let possibleNewImage = info["UIImagePickerControllerEditedImage"] as? UIImage { newImage = possibleNewImage }
+        else if let possibleNewImage = info["UIImagePickerControllerOriginalImage"] as? UIImage { newImage = possibleNewImage }
+        else { return }
+        
+        let imageName = NSUUID().UUIDString
+        let imagePath = self.getDocumentsDirectory().stringByAppendingPathComponent(imageName)
+        print(imagePath)
+        let jpegData = UIImageJPEGRepresentation(newImage, 80.0)
+        jpegData?.writeToFile(imagePath, atomically: true)
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: - Custom Methods
+    
+    func addNewPerson() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.allowsEditing = true
+        imagePicker.delegate = self
+        self.presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    func getDocumentsDirectory() -> String {
+        let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true) as [String]
+        print(paths)
+        let documentsDirectory = paths[0]
+        return documentsDirectory
     }
 
 }
